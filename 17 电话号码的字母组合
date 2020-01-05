@@ -1,3 +1,4 @@
+//方法1  使用循环产生深度搜索
 class Solution {
 public:
     string chars[8]={"abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
@@ -16,5 +17,48 @@ public:
             state=now;
         }
         return state;
+    }
+};
+//方法二  应用队列的形式
+class Solution {
+public:
+    vector<string> letterCombinations(string digits) {
+        vector<string> res;//用于存放结果
+        //映射map哈希表
+        map<char,string> m={{'2',"abc"},{'3',"def"},{'4',"ghi"},{'5',"jkl"},{'6',"mno"},{'7',"pqrs"},{'8',"tuv"},{'9',"wxyz"}};
+
+        int size=digits.size();//数字对应的字符串个数
+        queue<string> que;//定义队列
+        //先将第一个数字对应的字符串入队
+        //m[digits[0]].size()表示digits[0]数字对的字符串的长度   单个字符串的长度
+        for(int j=0;j<m[digits[0]].size();j++)
+        {
+            string str;//存放字符串
+            str.push_back(m[digits[0]][j]);//将char型的字符串转化为string型
+            que.push(str);//string型的字符串入队
+        }
+        string s;//用于存放队头元素
+        for(int i=1;i<size;i++)
+        {
+            int length=que.size();//当前队列的长度，即当前入队字符串的长度
+            while(length--)
+            {
+                //m[digits[i]].size()表示数字i对应的字符串的长度
+                for(int j=0;j<m[digits[i]].size();j++)
+                {
+                    s=que.front();
+                    s=s+m[digits[i]][j];//队头元素加上新元素
+                    que.push(s);//入队
+                }
+                //当前队头对应的元素已经全部入队
+                que.pop();//队头出队
+            }
+        }
+        while(!que.empty())
+        {
+            res.push_back(que.front());//队头元素存储到res
+            que.pop();//队头出队
+        } 
+        return res;//返回
     }
 };
