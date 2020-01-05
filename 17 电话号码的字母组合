@@ -1,0 +1,20 @@
+class Solution {
+public:
+    string chars[8]={"abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+    vector<string> letterCombinations(string digits) {
+        if(digits.empty()) return vector<string> ();
+
+        vector<string> state(1,"");//每次循环以后拼接的字符串
+        for(auto u:digits)//循环每个字符数字
+        {
+            vector<string> now;
+            for(auto c:chars[u-'2'])//循环每个数字对应的字符串  因为从2开始  因此减去偏移量‘2’
+            {
+                for(auto s:state)//对获得的状态循环
+                now.push_back(s+c);//拼接字符串
+            }
+            state=now;
+        }
+        return state;
+    }
+};
