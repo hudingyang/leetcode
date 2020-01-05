@@ -1,0 +1,19 @@
+class solution{
+public:
+     ListNode* removeNthFromEnd(ListNode* head ,int n);
+     {
+     //快慢双指针法
+     //注意哑结点
+       ListNode* dummy=new ListNode(-1),*fiirst=dummy,*sencond=dummy;
+       dummy->next=head;
+       while(n-->0) first=first->next;
+       while(first!=NULL)
+       {
+           if(first->next==NULL) second->next=second->next->next;
+           else
+               second=second->next;
+               first-first->next;
+       }
+       return dummy->next;
+     }
+};
