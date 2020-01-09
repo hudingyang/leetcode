@@ -1,0 +1,38 @@
+/*解题思路
+利用left，right分别记录已经添加的左右括号的数目，简单回溯即可*/
+
+/*回溯法思路的简单描述是：把问题的解空间转化成了图或者树的结构表示，
+然后使用深度优先搜索策略进行遍历，遍历的过程中记录和寻找所有可行解或者最优解。
+*/
+
+class solution
+{
+public:
+    void backtrace(int left,int right,int n,string& s,vector<string>& res)
+    {
+       if(left==n&&right==n)
+       {
+         res.push_back(s);//将元素s添加到 res中
+         return;
+       }
+       if(left<n)
+       {
+         s+="(";
+         backtrace(left+1,right,n,s,res);
+         s.pop_back();//删除元素
+       }
+       if(right<left)
+       {
+         s+=")";
+         backtrace(left,right+1,n,s,res);
+         s.pop_back();
+       }
+    }
+    vector<string> generateParenthesis(int n)
+    {
+      vector<string> res;
+      string s;
+      backtrace(0,0,n,s,res);
+      return res;
+    }
+};
