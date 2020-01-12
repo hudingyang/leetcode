@@ -1,0 +1,66 @@
+/*题解，在 合并两个有序链表的基础上，使用二分法进行合并排序，并考虑链表的奇偶个数问题
+*/
+struct ListNode{
+       int val;
+       ListNode* next;
+       ListNode(int x):val(x),next(NULL){}
+};
+
+class solution{
+public:
+   ListNode* mergeKLists(vector<ListNode*>& lists)
+   {
+       int size = lists.size();
+       if(size==0)
+       {
+          return nullptr;
+       }
+       if(size==1)
+       {
+          return lists[0];
+       }
+       
+       while(size>1)
+       {
+            for(int i=0;i<size/2;i++)
+            {
+                lists[i]=mergeTwoLists(lists[i],lists[i+size/2]);
+            }
+            if(size%2)
+            {
+                lists[size/2]=lists[size-1];
+                size=size/2+1;
+            }
+            else
+            {
+                size=size/2;
+            }
+       }     
+       return lists[0];
+   }
+
+
+   ListNode* mergeTowLists(ListNode* l1,ListNode*l2)
+   {
+       ListNode* preHead,*ptr;
+       preHead=new ListNode(-1);
+       ptr=preHead;
+       
+       while(l1!=NULL&&l2!=NULL)
+       {
+             if(l1->val<=l2->val)
+             {
+                ptr->next=l1;
+                l1=l1->next;
+             }
+             else
+             {
+                ptr->next=l2;
+                l2=l2->next;
+             }
+             ptr=ptr->next;
+       }
+       ptr->next=(l1==NULL?l2:l1);
+       return preHead->next;
+   }
+   };
