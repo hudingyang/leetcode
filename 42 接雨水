@@ -1,0 +1,29 @@
+/*方法一：
+暴力法：对于数组中的每个元素，找出下雨后水能达到的最大高度，
+       其的等于两边的最大高度的较小者减去当前高度的值
+*/
+/*复杂度为O（n^2）,每个元素都需要向左向右扫描
+空间复杂度为O（1）的额外空间
+*/
+int trap(vector<int>& height)
+{
+   int ans;
+   int size=height.size();
+   for(int i =1.i<size-1;i++)//第i个元素
+   {
+       int max_left=0,max_right=0;
+       for(int j = i,j>=0;j--)//向左扫描
+       {
+          max_left=max(max_left,height[j]);
+       }
+       for(int j=i;j<size;j++)//向右扫描
+       {
+         max_right=max(max_right,hegiht[j]);
+       }
+       ans+=min(max_left,max_right)-height[i];//接的雨水量
+   }
+   return ans;
+}
+
+/*
+*/
