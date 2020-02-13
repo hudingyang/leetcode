@@ -1,0 +1,91 @@
+/*题目：给定一个字符串（s）和一个字符模式（p），实现一个支持“？”和“*”的通配符匹配
+       其中，“？”可以匹配任何单个字符
+             “*”可以匹配任意字符串（包括空字符）
+  两个字符串完全匹配才算匹配成功。           
+*/
+
+/*思路一：双指针贪心法
+         难点在于处理*的匹配，用iStar和jStar表示*在s和p中匹配的位置，初始值为-1，i和j表示当前匹配的位置，匹配过程如下：
+        1、如果s和p中字符匹配，则分别自增i和j
+        2、否则如果p中当前字符为*，则标记iStar和jStar，同时自增j
+        3、否则如果iStar>=0,表示之前匹配过*，因为*可以匹配任何字符串，所以继续递增i，同时移动j为jStar下一个字符
+        4、否则返回false
+        当s中字符串匹配完，p中字符不能有除了*以外字符
+*/
+class solution
+{
+public:
+       bool isMatch(string s,string p)
+       {
+           int i=0,j=0,iStar=-1,jStar=-1,m=s.size(),n=p.size();
+           while(i<m)
+           {
+               if(j<n&&(s[i]==p[j]||p[j]=="?"))
+               {
+                     //i,j向后移动
+                     ++i;
+                     ++j;
+               }
+               else if(j<n&&p[j]=="*")//记录如果之后序列匹配不成功时，i和j需要回溯到的位置 继续寻找匹配
+               {
+                     iStar=i;//记录*号位置
+                     jStar=j++;//记录*号，并j移到下一位  准备下个循环s[i]和p[j]的匹配
+               }
+               else if(iStar>=0)//发现字符不匹配且没有星号出现 但是istar>0 说明可能是*匹配的字符数量不对 这时回溯
+               {
+                      i=++iStar;//==> i=iStar+1;i=iStar//i回溯到istar+1 因为上次从s串istar开始对*的尝试匹配已经被证明是不成功的（不然不会落入此分支） 所以需要从istar+1再开始试 同时inc istar 更新回溯位置
+                      j=jStar+1;//j回溯到jstar+1 重新使用p串*后的部分开始对s串istar（这个istar在上一行已经inc过了）位置及之后字符的匹配
+               }
+               else return false;
+           }
+           while(j<n&&p[j]=="*")//去除多余*号
+           {
+               ++j;
+           }
+           return j==n;
+       }
+};
+
+/*“？”可以匹配任何单个字符
+ “*”可以匹配任意字符串（包括空字符）*/
+/*方法2：动态规划法
+        dp[i][j]的含义：字符串s的前i个字符和字符串p的前j个字符的匹配情况。
+        动态规划四要素：
+           1、状态：dp[i][j]字符s[i]和p[j]是否匹配
+           2、转移方程：当s[i]==p[j]或者p[j]==“？”时，dp[i][j]=dp[i-1][j-1];
+                       当p[j]==“*”时：  1、*匹配空串时，dp[i][j]=dp[i][j-1];//eg:ab,ab*
+                                        2、*匹配s[i]时，dp[i][j]=dp[i-1][j];//abcd,ab*
+           3、初始化
+              dp[0][0]=true;s、p都为空，则匹配
+                1、dp[0][j]，即s为空，只有p中出现*号时才可能与s匹配
+                2、dp[i][0],p为空，一定不能匹配
+           4、结果
+              dp[s.size][p.size]
+*/
+class Solution {
+public:
+    bool isMatch(string s, string p) {
+        int n = s.size(), m = p.size();
+        vector< vector<bool> > dp(n+1, vector<bool>(m+1, false)); dp[0][0] = true;
+
+        // initialize 
+        for (int i = 1; i <= m; ++ i){
+            if(p[i - 1] == '*' && dp[0][i - 1]) dp[0][i] = dp[0][i - 1];
+        }
+
+        for (int i = 1; i <= n; ++ i){
+            for (int j = 1; j <= m; ++ j){
+                if (s[i - 1] == p[j - 1] || p[j - 1] == '?'){
+                    dp[i][j] = dp[i - 1][j - 1];// ismatch, move on
+                }else if (p[j - 1] == '*'){
+                    bool zero, mul;// '*' act as zero, '*' act as multiple characters
+                    zero = (j < m && s[i - 1] == p[j] && dp[i - 1][j - 1]) || dp[i][j - 1];
+                    mul = dp[i -1][j];
+                    dp[i][j] = zero || mul;
+                }
+            }
+        }
+
+        return dp[n][m];
+    }
+};
