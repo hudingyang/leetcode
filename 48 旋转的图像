@@ -1,0 +1,55 @@
+/*题解来自博客：https://blog.csdn.net/wuzhongqiang/article/details/103221743
+思路一： 
+      矩阵转置+镜像水平翻转：遍历一遍二维数组，先进行转置，然后遍历一遍行，每一行逆序即可
+*/
+//时间复杂度O(n^2),空间复杂度为O（1）没有额外开销
+class solution
+{
+public:
+      void rotate(vector<vector<int>>& matrix)
+      {
+           int rownum=matrix.size();
+           int colnum=matrix.size();
+           //将矩阵转置
+           for(int i=0;i<rownum;i++)
+           {
+               for(int j,j<colnum;j++)
+               {
+                   swap(matrix[i][j],matrix[j][i]);
+               }
+           }
+           //每一行水平翻转
+           for(int i=0;i<rownum;i++)
+           {
+               reverse(matrix[i].begin(),matrix.end());
+           }
+
+      }
+};
+/*思路二：
+        直接翻转：方法一使用了两次矩阵翻转，其实只需要依次翻转就能实现，
+        关键在于终止条件的判断以及交换的时候下标对应的位置（可以理解为在原矩阵上标出ij的位置，
+        然后找到转置的ji位置，然后再看交换时下标的对应位置）
+*/
+class solution
+{
+public:
+      void rotate(vector<vector<int>>& matrix)
+      {
+            int n = matrix.size();//求出的为矩阵的行数
+            //int m=matrix[0].size();//求出的为矩阵的列数 
+            
+            for(int i=0;i<(n+1)//2;i++)//行的遍历
+            {
+                for(int j=0;j<n/2;j++)//列的遍历
+                {
+                    //由于是旋转赋值，所以temp记录的是最后一个位置上的元素
+                    //然后逆时针进行覆盖。
+                    int temp=matrix[n-1-j][i];
+                    matrix[n-1-j][i]=matrix[j][n-1-i];
+                    matrix[j][n-1-i]=matrix[i][j];
+                    matrix[i][j]=temp;
+                }
+            }    
+      }
+};
