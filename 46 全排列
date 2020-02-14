@@ -1,0 +1,32 @@
+/*方法1：
+      回溯法：是一种通过探索所有可能的候选解来找出所有的解的算法。如果候选解被确认不是一个解（或者不是最后一个解）
+             回溯法会通过再上一步进行一些变化抛弃该解，即回溯并且再次尝试。
+             
+      这里有一个回溯函数，使用第一个正数的索引作为参数backtrack(first)。
+        1、如果第一个整数有索引n，意味着当前排列已完成。
+        2、遍历索引first到索引n-1的所有整数
+             * 在排列中防止第i个整数。即swap(nums[first],nums[i])；
+             * 继续生成第i个整数开始的所有排列：backtrack(first+1);
+             * 现在回溯，即通过swap(nums[first],nums[i])还原；
+*/
+class solution
+{
+public:
+       viod backtrack(int n,vector<int> &nums,vector<vector<int>> &res,int first)
+       {
+            if(first==n) res.push_back(nums);
+            for(int i=first;i<n;i++)
+            {
+                 swap(nums[first],nums[i]);
+                 backtrack(n,nums,res,first+1);
+                 swap(nums[first],nums[i]);
+            }
+       }
+       
+       vector<vector<int>> permute(vector<int> &nums)
+       {
+            vector<vector<int>> res;
+            backtrack(nums.size(),nums,res,0);
+            return res;
+       }
+};
