@@ -1,0 +1,127 @@
+/*方法一：分治法
+         使用分治法解决问题的模板
+         1、定义基本情况
+         2、将问题分解为子问题并递归的解决他们
+         3、合并子问题的解以获得原始问题的解
+   算法：
+       当最大数组有n个数字时：
+       1、若n=1,返回此元素
+       2、left_sum为最大数组的右子数组n/2个元素，在索引为（left+right）/2的元素属于左子数组
+       3、right_sum为最大子数组的右子数组，为最后n/2的元素
+       4、cross_sum是包含左右子数组且含索引（left+right）/2的最大值     
+*/
+/*时间复杂度：类似排序算法为O(NlogN)
+  空间复杂度：递归是使用栈O(logN)
+*/
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        return find(nums,0,nums.size()-1);    
+    }
+
+    int find(vector<int>& nums,int start,int end)
+    {
+        //边界
+        if(start==end)
+        {
+            return nums[start];
+        }
+        if(start>end)
+        {
+            return INT_MIN;
+        }
+        //找左右子数组的最值
+        int left_max=0,right_max=0,ml=0,mr=0;
+        int midle=(start+end)/2;
+
+        left_max=find(nums,start,midle-1);
+        right_max=find(nums,midle+1,end);
+
+        //去找左子数组最大和
+        for(int i=midle-1,sum=0;i>=start;--i)
+        {
+            sum+=nums[i];
+            if(ml<sum) ml=sum;//不断更新左子数组最大值
+        }
+        //去找右子数组最大和
+        for(int i=midle+1,sum=0;i<=end;++i)
+        {
+            sum+=nums[i];
+            if(mr<sum) mr=sum;//不断更新右子数组最大值
+        }
+
+        return max(max(left_max,right_max),ml+mr+nums[midle]);
+    }
+};
+/*方法2：贪心算法
+         1、使用单个数组作为输入来查找最大（最小）元素（或总和）的问题，贪心算法是可以在线性时间解决方法之一
+         2、每一步都是最佳方案，到最后就是全局最优的方案
+        算法：
+        该算法通用且简单：遍历数组并在每个步骤中跟新：
+        1、当前元素
+        2、当前元素位置的最大和
+        3、迄今为止的最大和
+*/
+class solution
+{
+public:
+      int maxSubArray(vector<int>& nums)
+      {
+          //类似寻找最小最大值的题目，初始化值一定要定义成理论上的最大最小值
+          int result=INT_MIN;
+          int numsSize=int(nums.size());
+          int sum=0;
+          //线性遍历
+          for(int i=0;i<numsSize;i++)
+          {
+                sum+=nums[i];
+                result=max(result,sum);
+                //如果sum<0,重新开始找子串
+                if(sum<0)
+                {
+                     sum=0;
+                }
+          }
+          return result;
+      }
+};
+
+/*方法3：动态规划（Kadane算法）
+        算法：
+           在整个数组或者固定大小的滑动窗口中找到总和或者最大最小值的问题可以通过动态规划在线性时间内解决
+        有两种标准DP方法适用于数组：
+        1、常数空间，沿数组移动并在原数组修改
+        2、线性空间，首先沿着left-->right方向移动，然后在沿着right-->left方向移动，合并结果
+*/
+本题适用于1
+class solution
+{
+public：
+      int maxSubArray(vector<int>& nums)
+      {
+            int result=INT_MIN;
+            int numsSize=int(nums.size());
+            /*
+            vector<int> dp(numsSize);
+            dp[0]=nums[0];
+            for(int i=1;i<numsSize;i++)
+            {
+                  dp[i]=max(dp[i-1]+nums[i],nums[i]);
+                  result=max(result,dp[i]);
+            }
+            */
+            /*可优化为：
+            //因为只需要知道dp的前一项，可以用int代替一维数组
+            int dp(nums[0]);
+            result=dp;
+             for(int i=1;i<numsSize;i++)
+            {
+                  dp=max(dp+nums[i],nums[i]);
+                  result=max(result,dp);
+            }
+            */
+            return result;
+      }
+      
+};
+
