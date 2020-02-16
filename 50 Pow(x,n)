@@ -1,0 +1,66 @@
+/*方法一：
+        蛮力法：直接模拟该过程，将x连乘n次。
+               如果n<0,可以使用1/x,-n代替x，n来保证n>0,
+               仍需要关注边界条件，尤其是正整数和负整数的不同范围限制
+        算法：使用一个for循环来直接计算
+*/
+/*计算时间超时*/
+复杂度分析：
+      时间复杂度：需要将x连乘n次，O(N)
+      空间复杂度：至于要一个变量来存储结果，O(1)
+class Solution {
+public:
+    double myPow(double x, int n) {
+        long long N = n;
+        if (N < 0) {
+            x = 1 / x;
+            N = -N;
+        }
+        double ans = 1;
+        for (long long i = 0; i < N; i++)
+            ans = ans * x;
+        return ans;
+    }
+};
+
+/*方法2：快速幂算法
+             假定已经获得了x^n次幂了，那么如何获取x^(2n)次幂呢？
+             使用公式x^(2n)=x^n*x^n即可。使用该算法可以降低算法的时间复杂度。
+         在该算法中需要根据n奇偶来分别讨论x^n的结果。
+         设A=x^(n/2),如果n为偶数，x^n=A*A
+                     否则x^n=A*A*x;
+          该方法可以很方便的使用递归实现。最多使用O(logn)次运算得到x^n;
+*/
+/*
+时间复杂度：使用x^(2n)=x^n*x^n，n每次都变成原来的一半，最多使用O(logn)
+空间复杂度：每计算一次，都需要存储结果，因此复杂度为O(logn)
+*/
+class solution
+{
+    double fastPow(double x,long long n)
+    {
+        if(n==0)
+        {
+            return 1.0;
+        }
+        double half=fastPow(x,n/2);
+        if(n%2==0)
+        {
+            return half*half;
+        }
+        else
+        {
+            return half*half*x;
+        }
+    }
+    double myPow(double x,int n)
+    {
+            long long N=n;
+            if(N<0)
+            {
+                  x=1/x;
+                  N=-N;
+            }
+             return fastPow(x,N);
+    }
+};
