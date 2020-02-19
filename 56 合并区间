@@ -1,0 +1,26 @@
+/*排序：根据区间左边边界排序，如果下一个区间的左边边界小于当前区间的右边界，合并；循环
+*/
+class solution
+{
+public:
+      vector<vector<int>> merge(vector<int>& intervals)
+      {
+            vector<int> res;
+            if(intervals.empty()) return res;
+            //按区间的左边界进行排序
+            sort(intervals.begin(),intervals.end(),[&,this](vector<int> &v1,vector<int> &v2) {return v1[0]<v2[0];});
+            
+            for(int i=0;i<intervals.size();++i)
+            {
+                  vector<int> temp=intervals[i];
+                  //当前区间的右边界大于等于下一区间的左边界
+                  while(i+1<intervals.size()&&temp[1]>=intervals[i+1][0])
+                  {
+                        ++1;
+                        temp[1]=max(temp[1],intevals[i][1]);
+                  }
+                  res.push_back(temp);
+            }
+            return res;
+      }
+};
