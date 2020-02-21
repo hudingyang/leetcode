@@ -1,0 +1,53 @@
+/*方法一：使用内置函数
+class solution
+{
+public:
+       int mysqrt(int x)
+       {
+           return sqrt(x);
+       }
+}
+*/
+/**方法二：二分搜索
+         算法：一个非负整数x的平方根S一定满足：S<=x/2;等号在x=2处取得
+               在区间【1，x/2】中利用二分查找的思想进行求解。
+*/
+class Solution{
+public:
+    int mySqrt(int x) {
+        int start = 1;
+        int end = x / 2;
+        int mid;
+        while (start <= end){
+            mid = ( start + end ) / 2;
+            if (mid == x / mid){
+                /// mid * mid == x
+                return mid;
+            }else if (mid < x / mid && (mid + 1) > x/(mid + 1) ){
+                /// mid * mid < x  && (mid + 1) * (mid + 1) > x
+                return mid;
+            }else if (mid > x / mid){
+                end = mid - 1;
+            }else {
+                start = mid + 1;
+            }
+        }
+        return x;/// x = 0, 1的时候,直接return x
+    }
+};
+/*方法3：牛顿迭代法
+       class Solution {
+public:
+    int mySqrt(int x) {
+        if (x == 0) return 0;
+        double last=0;
+        double res=1;
+        while(res!=last)
+        {
+            last=res;
+            res=(res+x/res)/2;//牛顿迭代公式
+        }
+        return int(res);
+    }
+};
+*/
