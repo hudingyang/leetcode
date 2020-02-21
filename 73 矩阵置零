@@ -1,0 +1,140 @@
+/*方法1：额外存储空间方法
+         思想：如果矩阵中任意一个格子有零，就记录下它的行和列，这些行和列在下一轮中全部赋值为0；
+         算法：
+         1、我们扫描一遍原始矩阵，找到所有为零的元素。
+         2、如果我们找到 [i, j] 的元素值为零，我们需要记录下行号 i 和列号 j。
+         3、用两个 sets ，一个记录行信息一个记录列信息。
+         4、最后，我们迭代原始矩阵，对于每个格子检查行 r 和列 c 是否被标记过，如果是就将矩阵格子的值设为 0。
+  JAVA       */
+  /*时间复杂度：O(M×N)，其中 M 和 N 分别对应行数和列数。
+    空间复杂度：O(M+N)。
+  */
+  class Solution {
+  public void setZeroes(int[][] matrix) {
+    int R = matrix.length;
+    int C = matrix[0].length;
+    Set<Integer> rows = new HashSet<Integer>();
+    Set<Integer> cols = new HashSet<Integer>();
+
+    // Essentially, we mark the rows and columns that are to be made zero
+    for (int i = 0; i < R; i++) {
+      for (int j = 0; j < C; j++) {
+        if (matrix[i][j] == 0) {
+          rows.add(i);
+          cols.add(j);
+        }
+      }
+    }
+
+    // Iterate over the array once again and using the rows and cols sets, update the elements.
+    for (int i = 0; i < R; i++) {
+      for (int j = 0; j < C; j++) {
+        if (rows.contains(i) || cols.contains(j)) {
+          matrix[i][j] = 0;
+        }
+      }
+    }
+  }
+}
+
+/*方法2：O(1)的空间暴力
+    思想：在上面的方法中我们利用额外空间去记录需要置零的行号和列号，
+          通过修改原始矩阵可以避免额外空间的消耗。
+    算法：
+        1、历原始矩阵，如果发现如果某个元素 cell[i][j] 为 0，我们将第 i 行和第 j 列的
+           所有非零元素设成很大的负虚拟值（比如说 -1000000）。注意，正确的虚拟值取值依
+           赖于问题的约束，任何允许值范围外的数字都可以作为虚拟之。
+        2、最后，我们便利整个矩阵将所有等于虚拟值（常量在代码中初始化为 MODIFIED）的元素设为 0。    
+*/
+/*时间复杂度：O((M×N)×(M+N))，其中 MM 和 NN 分别对应行数和列数。
+             尽管这个方法避免了使用额外空间，但是效率很低，因为最
+             坏情况下每个元素都为零我们需要访问所有的行和列，
+             因此所有 (M×N) 个格子都需要访问 (M+N) 个格子并置零。
+空间复杂度：O(1)
+*/
+class Solution {
+  public void setZeroes(int[][] matrix) {
+    int MODIFIED = -1000000;
+    int R = matrix.length;
+    int C = matrix[0].length;
+
+    for (int r = 0; r < R; r++) {
+      for (int c = 0; c < C; c++) {
+        if (matrix[r][c] == 0) {
+          // We modify the corresponding rows and column elements in place.
+          // Note, we only change the non zeroes to MODIFIED
+          for (int k = 0; k < C; k++) {
+            if (matrix[r][k] != 0) {
+              matrix[r][k] = MODIFIED;
+            }
+          }
+          for (int k = 0; k < R; k++) {
+            if (matrix[k][c] != 0) {
+              matrix[k][c] = MODIFIED;
+            }
+          }
+        }
+      }
+    }
+
+    for (int r = 0; r < R; r++) {
+      for (int c = 0; c < C; c++) {
+        // Make a second pass and change all MODIFIED elements to 0 """
+        if (matrix[r][c] == MODIFIED) {
+          matrix[r][c] = 0;
+        }
+      }
+    }
+  }
+}
+/*方法3：
+       思想：
+            1、第二种方法不高效的地方在于我们会重复对同一行或者一列赋零。
+               我们可以推迟对行和列赋零的操作。
+            2、我们可以用每行和每列的第一个元素作为标记，这个标记用来表示
+              这一行或者这一列是否需要赋零。这意味着对于每个节点不需要访问
+              M+N 个格子而是只需要对标记点的两个格子赋值。
+
+*/
+void setZeroes(vector<vector<int>>& matrix) {
+    bool row = false;//第一行是否需要置零
+    bool column = false;//第一列是否需要置零
+    for(int i = 0; i < matrix.size(); i++){
+        for(int j = 0; j < matrix[i].size(); j++){
+            if(matrix[i][j] == 0){
+                if( i == 0){
+                    row = true;//第一行需要置零
+                }
+                if(j == 0){
+                    column = true;//第一列需要置零
+                }
+                matrix[i][0] = 0;//第i行第一个元素置零，表示这一行需要全部置零
+                matrix[0][j] = 0;//第j列第一个元素置零，表示这一列需要全部置零
+            }
+        }   
+    }
+    for(int i = 1; i < matrix.size(); i ++){
+        if(matrix[i][0] == 0){//第i行第一个元素为零，表示这一行需要全部置零
+            for(int j = 1; j < matrix[i].size(); j++){
+                matrix[i][j] = 0;
+            }
+        }
+    }
+    for(int j = 1; j < matrix[0].size(); j ++){
+        if(matrix[0][j] == 0){//第j列第一个元素为零，表示这一列需要全部置零
+            for(int i = 1; i < matrix.size(); i++){
+                matrix[i][j] = 0;
+            }
+        }
+    }
+    if(row == true){//第一行需要置零
+        for(int j = 1; j < matrix[0].size(); j++){
+                matrix[0][j] = 0;
+        }
+    }
+    if(column == true){//第一列需要置零
+        for(int i = 1; i < matrix.size(); i++){
+                matrix[i][0] = 0;
+        }
+    }
+}
