@@ -1,0 +1,27 @@
+/*方法一：一次遍历（荷兰问题）
+        思想：给每个数字设定一种颜色，并按照荷兰国旗颜色的顺序进行调整
+             利用三个指针（p0,p2,curr）里分别追踪0的最右边界，2的最左边界和当前元素
+             沿着数组移动，curr指针，若nums[curr]=0;则将其与nums[p0]互换，
+             若nums[curr]=2;则将其与nums[p2]互换。
+*/
+class Solution {
+public:
+    void sortColors(vector<int>& nums) {
+         int p0=0,curr=0;
+         int p2=nums.size()-1;
+
+         while(curr<=p2)
+         {
+             if(nums[curr]==0)
+             {
+                 swap(nums[curr++],nums[p0++]);
+             }
+             else if(nums[curr]==2)
+             {
+                 swap(nums[curr],nums[p2--]);
+             }
+             else
+             curr++;
+         }
+    }
+};
