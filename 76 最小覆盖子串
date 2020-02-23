@@ -1,0 +1,73 @@
+/*滑动窗口的通用思想：
+        unordered_map就是哈希表（字典），它的一个方法count(key)相当于containsKey(key)可以判断键key是否存在
+        可以使用方括号访问键对应的值map(key),如果该key不存在，C++会自动创建这个key，并把map(key)赋值为0      
+*/
+/*
+滑动窗口算法的思路是这样：
+
+1、我们在字符串 S 中使用双指针中的左右指针技巧，初始化 left = right = 0，把索引闭区间 [left, right] 称为一个「窗口」。
+
+2、我们先不断地增加 right 指针扩大窗口 [left, right]，直到窗口中的字符串符合要求（包含了 T 中的所有字符）。
+
+3、此时，我们停止增加 right，转而不断增加 left 指针缩小窗口 [left, right]，直到窗口中的字符串不再符合要求（不包含 T 中的所有字符了）。同时，每次增加 left，我们都要更新一轮结果。
+
+4、重复第 2 和第 3 步，直到 right 到达字符串 S 的尽头。
+
+这个思路其实也不难，第 2 步相当于在寻找一个「可行解」，然后第 3 步在优化这个「可行解」，最终找到最优解。左右指针轮流前进，窗口大小增增减减，窗口不断向右滑动。
+*/
+class solution
+{
+public:
+   string minWindow(string s,string t)
+   {
+          //记录最短字串的开始位置和长度
+          int start=0,minLen=INT_MAX;
+          int left=0,right=0;
+          
+          unordered_map<char,int> window;
+          unordered_map<char,int> needs;
+          
+          //目标字符串中的每个字符出现的次数
+          for(char c:t) need[c]++;
+          
+          //记录window中已经有多少个字符串符合要求了
+          int match=0;
+          
+          while(right<s.size())
+          {
+              char c1=s[right];
+              //判断字符串c1在目标字符串needs中出现的次数 
+              if(needs.count(c1))
+              {
+                  window[c1]++;//加入window
+                  if(window[c1]==needs[c1])//如果window[c1]和needs[c1]出现次数相等
+                  
+                  //字符c1出现的次数符合要求了
+                      match++;//则该字符串匹配
+              }
+              right++;
+              
+              //window中的字符串已经符合needs的要求了
+              while(match==needs.size())
+              {
+                    //更新结果
+                    if(right-left<minLen)
+                    {
+                        start=left;
+                        minLen==right-left;
+                    }
+                    char c2=s[left];
+                    if(needs.count(c2))
+                    {
+                        window[c2]--;//移除window
+                        if(window[c2]<needs[c2])
+                        
+                        //字符c2出现的次数不在符合要求
+                            match--;
+                    }
+                    left++;
+              }
+          }
+          return minLen==INT_MAX?"":s.substr(start,minLen);
+   }
+};
