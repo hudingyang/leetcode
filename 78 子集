@@ -1,0 +1,85 @@
+/*方法一：位运算
+    思路：一个数从0开始增加，每次增加1，到1<<nums.size()停止，每个数的每一位的01组合便是数字组合。
+*/
+/*class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res;
+
+        int all_set=1<<nums.size();//集合的个数2^nums.size();用二进制数表示
+
+        for(int i=0;i<all_set;i++)
+        {
+            vector<int> item;//存放每一个子集
+            for(int j=0;j<nums.size();j++)
+            {
+                if(i&(1<<j))//二进制操作，（1<<j）总的1对应元素的出现 第一个元素1左移位，第二个元素1左移一位，然后与i进行相与操作。如果非0，则将二进制数对应的子集加到item中
+                {
+                    item.push_back(nums[j]);
+                }
+            }
+            res.push_back(item);
+        }
+        return res;
+    }
+};*/
+
+/*动态规划
+解题思路：1、空集的子集还是空集
+         2、假设已知前K-1个数的所有子集，那么前K个数的所有子集就是，在前K-1个数的
+            所有子集的基础上，每个集合在加上第K个数。
+*/
+class Solution {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        return findsubsets(nums, nums.size());
+    }
+
+//前k个数的子集
+    vector<vector<int>> findsubsets(vector<int>& nums, int k){
+        vector<vector<int>> result;
+        if(k==0){
+            result.push_back({});
+            //result.push_back({nums[0]});
+        }
+        else{
+            vector<vector<int>> lastresult = findsubsets(nums, k-1);
+            result = lastresult;
+            for(int i = 0; i < lastresult.size(); i++){
+                lastresult[i].push_back(nums[k-1]);
+                result.push_back(lastresult[i]);
+                //result.emplace_back(lastresult[i]);
+            }
+        }
+        return result;
+    }
+};
+
+
+/*深度优先遍历:
+解空间当做图的深度优先遍历
+        解空间当做图，则这个图的结点构成依据是解里面元素的个数，即空集邻接了{1},{2},{3}，而集合
+         {1}邻接了{1,2},{1,3},集合{2}邻接{2,3}，集合{1,2}邻接了{1,2,3}
+*/
+class Solutionx {
+public:
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> vec;
+        dfs(0,0,ans,vec,nums);
+        return ans;
+    }
+    void dfs(int step,int num,vector<vector <int>> &ans,vector<int>& vec,vector<int>nums)
+    {
+        if(num <= nums.size())
+        {
+            ans.push_back(vec);
+        }
+        for(int i = step;i < nums.size();i++)
+        {
+            vec.push_back(nums[i]);
+            dfs(i + 1,num + 1,ans,vec,nums);
+            vec.pop_back();//这就是回溯吧
+        }
+    }
+};
