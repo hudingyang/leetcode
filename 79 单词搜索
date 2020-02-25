@@ -1,0 +1,56 @@
+/*整体思路：
+      使用深度优先遍历(DFS)和回溯的思想实现，关于判断元素是否使用过，利用一个二维数组mark对使用过的元素标记
+      外层遍历：首先遍历board的所有元素，先找到和word第一个字母相同的元素，然后进入递归流程。假设这个元素的
+               坐标为(i,j)，进入递归流程前，先记得把该元素打上使用过的标记：mark[i][j]=1;
+      内层：递归
+           打完标记后，进入递归流程，主要做以下几件事;
+           1、从(i，j)出发，朝它的上下左右试探，看看周边的四个元素能否匹配word的下一个字母。
+              如果匹配到，带着该元素继续进入下一个递归。
+              如果匹配不到，返回false;
+           2、当我word的所有字母都完成匹配后，整个流程返回true;
+      注意点：
+            1、递归时元素的坐标是否炒股票边界；
+            2、回溯标记mark[i][j]=0以及return的时机；
+*/
+class solution
+{
+public:
+      bool exist(vector<vector<char>>& board,string word)
+      {
+           for(int i=0;i<board.size();i++)//外层遍历board所有元素
+           {
+                for(int j=0;j<board[0].size();j++)//递归
+                {
+                    if(backtrack(board,word,0,i,j))//从二维表格的每一个格子出发
+                    {
+                        return true;
+                    }
+                }
+           }
+           return false;
+      }
+      
+      bool backtrack(vector<vector<char>>& board,string& word,int wordIndex,int x,int y)
+      {
+           if(board[x][y]!=word[wordIndex])//当前位的字母不想等，此路不通
+           {
+                return false;
+           }
+           if(word.size()-1==wordIdenx)//最后一个字母也相等，返回成功
+           {
+                return true;
+           }
+           char temp=board[x][y];
+           board[x][y]=0;//避免该位重复使用
+           wordIndex++;
+           if((x > 0 && backtrack(board, word, wordIndex, x - 1, y)) // 往左走
+               || (y > 0 && backtrack(board, word, wordIndex, x, y - 1)) // 往上走
+               || (x < board.size() - 1 && backtrack(board, word, wordIndex, x + 1, y)) // 往右走
+               || (y < board[0].size() - 1 && backtrack(board, word, wordIndex, x, y + 1)))// 往下走
+           {
+                return true;//其中一条能走通，就算成功
+           }
+           board[x][y]=temp;//如果都不通，则回溯上一状态
+           return false;
+      }
+};
