@@ -1,0 +1,44 @@
+/*方法一 : 合并后排序
+          最朴素的解法就是将两个数组合并之后再排序。
+*/
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for(int index1=m,index2=0;index2<n;)
+            nums1[index1++]=nums2[index2++];//合并数组
+        sort(nums1.begin(),nums1.begin()+m+n);//重新排序
+    }
+};
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        for(int i=m,j=0;i<m+n;i++,j++) nums1[i]=nums2[j];
+        sort(nums1.begin(),nums1.end());
+    }
+/*方法二 : 双指针 / 从前往后
+一般而言，对于有序数组可以通过 双指针法 达到O(n+m)的时间复杂度。
+最直接的算法实现是将指针p1 置为 nums1的开头， p2为 nums2的开头，在每一步将最小值放入输出数组中。
+由于 nums1 是用于输出的数组，需要将nums1中的前m个元素放在其他地方，也就需要O(m) 的空间复杂度。
+*/
+void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int p=0,i=0,j=0;
+        vector<int> tmp(nums1.begin(),nums1.begin()+m);
+        while(i<m&&j<n) nums1[p++] = (tmp[i] < nums2[j]) ? tmp[i++] : nums2[j++];
+        while(j<n) nums1[p++] = nums2[j++];
+        while(i<m) nums1[p++] = tmp[i++];
+    }
+/*方法三 : 双指针 / 从后往前
+方法二已经取得了最优的时间复杂度O(n + m)O(n+m)，但需要使用额外空间。这是由于在从头改变nums1的值时，需要把nums1中的元素存放在其他位置。
+如果我们从结尾开始改写 nums1 的值又会如何呢？这里没有信息，因此不需要额外空间。
+*/
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int p1=m-1,p2=n-1,p=m+n-1;
+        while(p1>=0&&p2>=0){
+            nums1[p--]=nums1[p1]>nums2[p2]? nums1[p1--]:nums2[p2--];
+        }
+        if(p1<0){//数组1比较完了数组2还有剩余
+             while (p2 >= 0)
+                nums1[p--] = nums2[p2--];
+        }
+    }
+};
