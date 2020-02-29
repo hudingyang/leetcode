@@ -1,0 +1,49 @@
+/*递归法
+     思想：用划定边界的方法递归，样例中有数据INT_MAX和INT_MIN，改用long型的边界即可
+class solution
+{
+public:
+      //以root为根节点的子树是不是二叉搜索树
+      bool isValid(TreeNode* current,long left,long right)
+      {
+            if(current==nullptr) return true;
+            else if(current->val<=left||current->val>=right) return false;
+            return isValid(current->left,lef,current->val)&&isValid(current->right,current->val,right);
+      }
+      bool isValidBST(TreeNode* root)
+      {
+          return isValid(root,LONG_MIN,LONG_MAX);//采用LONG_MIN,LONG_MAX防止数据溢出
+      }
+};
+*/
+/*非递归：
+        思想：中序遍历，当前访问节点p跟迁移记录跟前一个访问节点的值pre比较，
+                若p<=pre则该二叉树不是，否则继续往下判断，全部判断完则说明是二叉搜索树。
+*/
+class solution
+{
+public:
+      bool isValidBST(TreeNode* root)
+      {
+            long long pre=(long long)INT_MIN-1;
+            
+            TreeNode* p=root;
+            stack<TreeNode* > stk;
+            while(p||!stk.empty())
+            {
+                while(p)
+                {
+                stk.push(p);
+                p=p->left;
+                }
+                p=stk.top();
+                stk.pop();
+                
+                if(p->val<=pre) return false;
+                pre=p->val;
+                
+                p=p->right;
+            }
+            return true;
+      }
+};
