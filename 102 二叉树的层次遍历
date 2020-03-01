@@ -1,0 +1,60 @@
+/*迭代的方法   广度优先搜索
+我们把每层遍历到的节点都放入到一个结果集中，最后返回这个结果集就可以了。
+时间复杂度:O(n)
+空间复杂度:O(n)
+class Solution {
+public:
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        vector<vector<int>> res;
+        //如果为空，直接返回
+        if (root == nullptr) return res;
+        //新建一个队列,用于依次加入节点
+        queue<TreeNode*> myque;
+        myque.push(root); //加入第一个节点
+        while( ! myque.empty() ){
+            //当前层的结果
+            vector<int> curr;
+            int level_size = myque.size(); //获取目前队列长度
+            for (int i = 0; i < level_size; i++){
+                //取出元素
+                TreeNode *node = myque.front();
+                myque.pop();
+                //加入到curr中
+                curr.push_back(node->val);
+                //加入节点的自己节点
+                if(node->left != NULL) myque.push(node->left);
+                if (node->right != NULL) myque.push(node->right);
+            }
+            //加入每一层的结果
+            res.push_back(curr);
+        }
+        return res;
+    }
+};
+*/
+
+/*迭代   深度优先搜索
+本题要求逐层遍历，而且左到右，注意到不同层的节点的val是放在不同的vector中的。
+所以对于递归实现的前序、中序、后序遍历均可保证层次要求。比如说根节点放在第0层，
+它的左右节点放在第一层，所以第0层和第一层的节点分别放在不同的数组。
+*/
+class Solution {
+public:
+    vector<vector<int>>ans;
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if(!root) return ans;
+        int n=howlen(root);
+        ans.resize(n);
+        levelOrder(root,0);
+        return ans;
+    }
+    void levelOrder(TreeNode* root,int n){//n为此时节点所在的层，根节点为第零层，每次递归都加1
+        ans[n].push_back(root->val);
+        if(root->left) levelOrder(root->left,n+1);
+        if(root->right) levelOrder(root->right,n+1);
+    }
+    int howlen(TreeNode* root){//用递归求树的总层数
+        if(root==NULL) return 0;
+        return max(howlen(root->left),howlen(root->right))+1;
+    }
+};
