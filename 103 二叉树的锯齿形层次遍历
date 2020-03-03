@@ -1,0 +1,49 @@
+方法一：BFS（广度优先遍历）
+    思路： 最直观的方法是 BFS，逐层遍历树。
+          BFS 在每层的默认顺序是从左到右，因此需要调整 BFS 算法以生成锯齿序列。
+          最关键的是使用双端队列遍历，可以在队列的任一端插入元素。
+          如果需要 FIFO （先进先出）的顺序，则将新元素添加到队列尾部，后插入的元素就可以排在后面。
+          如果需要 FILO （先进后出）的顺序，则将新元素添加到队列首部，后插入的元素就可以排在前面。
+    算法：
+    实现 BFS 的几种算法。
+    使用两层嵌套循环。外层循环迭代树的层级，内层循环迭代每层上的节点。
+    也可以使用一层循环实现 BFS。将要访问的节点添加到队列中，使用 分隔符（例如：空节点）把不同层的节点分隔开。分隔符表示一层结束和新一层开始。
+    这里采用第二种方法。在此算法的基础上，借助双端队列实现锯齿形顺序。在每一层，使用一个空的双端队列保存该层所有的节点。
+      根据每一层的访问顺序，即从左到右或从右到左，决定从双端队列的哪一端插入节点。
+    
+    实现从左到右的遍历顺序（FIFO）。将元素添加到队列尾部，保证后添加的节点后被访问。
+    实现从右到左的遍历顺序（FILO）。将元素添加到队列头部，保证后添加的节点先被访问。
+    
+    class Solution {
+public:
+    vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+        vector<vector<int>> ans;
+        if (!root) return ans;
+        deque<TreeNode*> que;
+        que.push_back(root);
+        bool zigzag = true;
+        TreeNode* tmp;
+        while (!que.empty()) {
+            int Size = que.size();
+            vector<int> tmp_vec;
+            while (Size) { 
+                if (zigzag) { // 前取后放
+                    tmp = que.front();
+                    que.pop_front();
+                    if (tmp->left) que.push_back(tmp->left); // 下一层顺序存放至尾
+                    if (tmp->right) que.push_back(tmp->right);                
+                } else { // 后取前放
+                    tmp = que.back();
+                    que.pop_back();
+                    if (tmp->right) que.push_front(tmp->right); // 下一层逆序存放至首
+                    if (tmp->left) que.push_front(tmp->left);
+                }
+                tmp_vec.push_back(tmp->val);
+                --Size;
+            }
+            zigzag = !zigzag;
+            ans.push_back(tmp_vec);
+        }
+        return ans;
+    }
+};*/
