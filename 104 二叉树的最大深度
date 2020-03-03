@@ -1,0 +1,45 @@
+
+//递归法
+class Solution {
+public:
+    int dfs(TreeNode* root ,int maxDepth)
+    {
+        if(!root) return maxDepth;
+
+        int left_dept=dfs(root->left,maxDepth+1);
+        int right_dept=dfs(root->right,maxDepth+1);
+
+        return max(left_dept,right_dept);
+    }
+    int maxDepth(TreeNode* root) {
+        int maxDepth=0;
+        return dfs(root,maxDepth);
+
+    }
+};
+//迭代法
+class solution{
+public:
+    int maxDepth(TreeNode* root)
+    {
+         int max_dept=0;
+         queue<pair<TreeNode* root,int >>q;
+         
+         q.push({root,1});
+         
+         while(!q.empty())
+         {
+              TreeNode* curr_node=q.front().first;
+              int curr_depth=q.front().second;
+              q.pop();
+              
+              if(curr_node)
+              {
+                  max_depth=max(curr_dept,max_dept);
+                  q.push(curr_node->left,max_dept+1);
+                  q.push(curr_node->right,max_dept+1);
+              }
+         }
+         return max_dept;
+    }
+};
