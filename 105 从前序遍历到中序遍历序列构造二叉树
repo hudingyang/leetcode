@@ -1,0 +1,78 @@
+/*解题思路
+    采用递归的思想
+    先构造根节点，根节点是先序遍历的第一个节点
+    寻找根节点在中序序列中的位置
+    递归构建根节点的左右子树
+*/
+class solution
+{
+public:
+      //参数分别为：前序遍历，初始位置，末尾位置，中序遍历，初始位置，末尾位置
+      TreeNode* build(vector<int>& preorder,int ps,int pe,vector<int>& inorder,int is,int ie)
+      {
+            //构建根节点
+            TreeNode* root=new TreeNode(preorder[ps]);
+            root->left==NULL;
+            root->right==NULL;
+            
+            //在中序列中寻找根节点
+            int i=is;
+            while(i<=ie&&preorder[ps]!=inorder[i])
+                  ++i;
+            //i指向中序序列中根节点的位置
+            int ll=i-is;//左子树的序列长度
+            int rl=ie-i;//右子树的序列长度
+            
+            //构建左右子树
+            if(ll>0)
+            {
+                root->left=build(preorder,ps+1,ps+ll,inorder,is,is+ll-1);
+            }
+            if(rl>0)
+            {
+                root->left=build(preorder,ps+ll+1,pe,inorder,is+ll+1,ie);
+            }
+            return root;    
+      }
+      TreeNode* buildTree(vector<int>& preorder,vector<int>& inorder)
+      {
+            if(preorder.size()=0||preorder.size()=0) return NULL;
+            return build(preorder,0,preorder.size()-1,inorder,0,inorder.size()-1);
+      }
+};
+
+
+
+//非递归
+class solution
+{
+public:
+    TreeNode* buildTree(vector<int>& pre,vector<int>& in)
+    {
+          if(pre.empty()) return NULL;
+          stack<TreeNode*> s;
+          TreeNode* root=new TreeNode(pre[0]);
+          s.push(root);
+          
+          for(int i=1,j=0;i<pre.size();i++)
+          {
+                TreeNode* back=NULL,*cur=new TreeNode(pre[i]);
+                while(!s.empty()&&s.top()->val==in[j])
+                {
+                    back=s.top();
+                    s.pop();
+                    j++;
+                }
+                if(back)
+                {
+                    back->right=cur;
+                }
+                else
+                {
+                    s.top()->left=cur;
+                }
+                s.push(cur);
+          }
+          return root;
+    }
+};
