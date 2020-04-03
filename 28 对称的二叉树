@@ -1,0 +1,106 @@
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+ 方法一： 递归法
+找到递归点：左树与右树对称与否，与其跟两树的子树的对称情况有关系。
+
+递归结束条件：
+都为空指针则返回 true
+只有一个为空则返回 false
+两个指针当前节点值不相等 返回false
+
+递归过程：
+判断 A 的右子树与 B 的左子树是否对称
+判断 A 的左子树与 B 的右子树是否对称
+
+复杂度分析
+时间复杂度：O(n)，因为我们遍历整个输入树一次，所以总的运行时间为O(n)，其中n是树中结点的总数。
+空间复杂度：递归调用的次数受树的高度限制。在最糟糕情况下，树是线性的，其高度为O(n)。
+因此，在最糟糕的情况下，由栈上的递归调用造成的空间复杂度为O(n)。
+
+/*class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        bool res=true;
+
+        if(root!=NULL)
+        {
+            return dfs(root->left,root->right);
+        }
+        return res;
+    }
+    bool dfs(TreeNode* A,TreeNode* B)
+    {
+        if(A==NULL && B==NULL)
+        {
+            return true;
+        }
+        if(A==NULL||B==NULL)
+        {
+            return false;
+        }
+        if(A->val!=B->val)
+        {
+            return false;
+        }
+        return dfs(A->left,B->right)&&dfs(A->right,B->left);
+    }
+};*/
+
+方法二： 迭代法
+利用队列进行迭代。队列中每两个连续的结点应该是相等的，而且它们的子树互为镜像。
+最初，队列中包含的是 root->left 以及 root->right。该算法的工作原理类似于 BFS，但存在一些关键差异。
+每次提取两个结点并比较它们的值。然后，将两个结点的左右子结点按相反的顺序插入队列中。
+当队列为空时，或者检测到树不对称（即从队列中取出两个不相等的连续结点）时，该算法结束。
+
+复杂度分析
+时间复杂度：O(n)，因为我们遍历整个输入树一次，所以总的运行时间为O(n)，其中nn是树中结点的总数。
+空间复杂度：搜索队列需要额外的空间。在最糟糕情况下，我们不得不向队列中插入O(n)个结点。因此，空间复杂度为O(n)
+
+class Solution {
+public:
+    bool isSymmetric(TreeNode* root) {
+        if(root==NULL)
+        {
+            return true;
+        }
+            
+        queue<TreeNode*> q;
+        q.push(root->left);
+        q.push(root->right);
+
+        while(!q.empty())
+        {
+            TreeNode* A=q.front();
+            q.pop();
+            TreeNode* B=q.front();
+            q.pop();
+
+            if(A==NULL&&B==NULL)
+            {
+                continue;
+            }
+            if(A==NULL||B==NULL)
+            {
+                return false;
+            }
+            if(A->val!=B->val)
+            {
+                return false;
+            }
+
+            q.push(A->left);
+            q.push(B->right);
+
+            q.push(A->right);
+            q.push(B->left);
+        }
+        return true;
+    }
+};
