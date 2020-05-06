@@ -1,0 +1,32 @@
+/*class Solution {
+public://暴力法
+    vector<int> twoSum(vector<int>& nums, int target) {
+        vector<int> res;
+        for(int i=0;i<nums.size();i++)
+        {
+            for(int j=i+1;j<nums.size();j++)
+            if(nums[i]+nums[j]==target)
+            {
+                res.push_back(i);
+                res.push_back(j);
+            }
+        }
+        return res;
+    }
+};*/
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        unordered_map<int,int> m;
+        for(int i=0;i<nums.size();i++)
+        {//一边查找一边添加的话找到了就退出了，到最后都没找到的话就会返回空
+            if(m.find(target-nums[i])!=m.end())//找到了
+            {
+                return {m[target-nums[i]],i};//返回下标
+            }
+            m[nums[i]]=i;//没找到，就添加
+        }
+        return {};//遍历完也没找到，直接返回空。
+    }
+};
