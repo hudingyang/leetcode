@@ -1,0 +1,39 @@
+解题方法：
+解法一：建立一个HashMap，建立每个字符和其最后出现位置之间的映射，然后我们需要定义两个变量res和left，
+其中res用来记录最长无重复子串的长度，left指向该无重复子串左边的起始位置的前一个，由于是前一个，所以初始化就是-1，
+然后我们遍历整个字符串，对于每一个遍历到的字符，如果该字符已经在HashMap中存在了，并且如果其映射值大于left的话，
+那么更新left为当前映射值。然后映射值更新为当前坐标i，这样保证了left始终为当前边界的前一个位置，然后计算窗口长度的时候，
+直接用i-left即可，用来更新结果res，代码如下：
+int lengthOfLongestSubstring(string s) {
+        int res = 0, left = -1;//方法一
+        unordered_map<int, int> map;
+        for (int i = 0;i < s.size(); ++i) {
+            if (map.count(s[i]) && map[s[i]] > left) {
+                left = map[s[i]];
+            }
+            map[s[i]] = i;
+            res = max(res, i - left);
+        }
+        return res;
+    }
+if判断的解释：一旦当前字符s[i]在HashMap已经存在映射，说明当前的字符已经出现过了，而若m[s[i]] > left 成立，
+说明之前出现过的字符在我们的窗口内，那么如果要加上当前这个重复的字符，就要移除之前的那个，所以我们让left赋值为m[s[i]]，
+由于left是窗口左边界的前一个位置，所以相当于已经移除出滑动窗口了。
+运行效率：36ms
+
+解法二：
+建立一个256位大小的整型数组来代替HashMap，这样做的原因是ASCII表共能表示256个字符，但是由于键盘只能表示128个字符，
+所以用128也行，然后我们全部初始化为-1，这样的好处是我们就不用像之前的HashMap一样要查找当前字符是否存在映射对了，
+对于每一个遍历到的字符，我们直接用其在数组中的值来更新left，因为默认是-1，而left初始化也是-1，所以并不会产生错误，
+这样就省了if判断的步骤，其余思路都一样：
+int lengthOfLongestSubstring( string s) {
+        vector < int > m( 128 , - 1 );//方法二
+         int res = 0 , left = - 1 ;
+         for ( int i = 0 ; i < s.size(); ++ i) {
+            left = max(left, m[s[i]]);
+            m[s[i]] = i;
+            res = max(res, i - left);
+        }
+        return res;
+    }
+运行效率：20ms
