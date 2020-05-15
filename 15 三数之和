@@ -1,0 +1,82 @@
+排序 + 双指针
+本题的难点在于如何去除重复解。
+
+算法流程：
+特判，对于数组长度 n，如果数组为 null 或者数组长度小于 3，返回 []。
+对数组进行排序。
+遍历排序后数组：
+若 nums[i]>0：因为已经排序好，所以后面不可能有三个数加和等于 00，直接返回结果。
+对于重复元素：跳过，避免出现重复解
+令左指针 L=i+1，右指针 R=n−1，当 L<R 时，执行循环：
+当 nums[i]+nums[L]+nums[R]==0，执行循环，判断左界和右界是否和下一位置重复，去除重复解。并同时将 L,R 移到下一位置，寻找新的解
+若和大于 0，说明 nums[R] 太大，R 左移
+若和小于 0，说明 nums[L] 太小，L 右移
+复杂度分析
+时间复杂度：O(n^2)，数组排序 O(NlogN)，遍历数组 O(n)，双指针遍历 O(n)，总体 O(NlogN)+O(n)∗O(n))
+空间复杂度：O(1)
+class Solution {
+public:
+    /*vector<vector<int>> threeSum(vector<int>& nums){
+        vector<vector<int>>res;
+        sort(nums.begin(),nums.end());
+        if(nums.size()<3)return res;
+        int l,r;
+        for(int i=0;i<nums.size();i++){
+            if(nums[i]>0)break; //如果当前数字大于0，则三数之和一定大于0，所以结束循环
+            if(i>0&&nums[i]==nums[i-1])continue;//去重
+            l=i+1;
+            r=nums.size()-1;
+            while(l<r){
+                int sum=nums[i]+nums[l]+nums[r];
+                if(sum==0){
+                    res.push_back(vector<int>{nums[i],nums[l],nums[r]});
+                    while (l<r && nums[l] == nums[l+1]) l++; // 去重
+                    while (l<r && nums[r] == nums[r-1]) r--; // 去重
+                    l++;
+                    r--;
+                }
+                else if(sum>0)r-=1;
+                else l+=1;
+            }
+        }
+        return res;
+    }*/
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        vector<vector<int>>result;
+        vector<int>num;
+        unordered_map<int, int> M;
+        for (int i = 0; i < nums.size();i++){
+            if (M.find(nums[i]) == M.end())
+            {
+                M[nums[i]] = 1;
+                num.push_back(nums[i]);
+            }
+            else
+                M[nums[i]]++;
+        }
+        sort(num.begin(), num.end());
+        int firstoutput = 1;
+        for (int i = 0; i < num.size(); i++)
+        {
+            for (int j = i; j < num.size();j++){
+                if(j==i&&M[num[j]]==1)
+                    continue;
+                if(-num[i]-num[j]<num[j])
+                    continue;
+                if (M.find(-num[i] - num[j]) != M.end())
+                {
+                    if (-num[i] - num[j]==num[j]){
+                        if(num[j]==num[i]){
+                            if(M[num[j]]<=2)continue;
+                        }
+                        else{
+                            if(M[num[j]]==1)continue;
+                        }
+                    }
+                    result.push_back(vector<int>{num[i],num[j],-num[i] - num[j]});
+                }
+            }
+        }
+        return result;
+    }
+};
