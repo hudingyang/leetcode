@@ -1,0 +1,65 @@
+方法1：递归
+
+算法：
+从链表的头节点 head 开始递归。
+每次递归都负责交换一对节点。由 firstNode 和 secondNode 表示要交换的两个节点。
+下一次递归则是传递的是下一对需要交换的节点。若链表中还有节点，则继续递归。
+交换了两个节点以后，返回 secondNode，因为它是交换后的新头。
+在所有节点交换完成以后，我们返回交换后的头，实际上是原始链表的第二个节点。
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        if(head==nullptr||head->next==nullptr) return head;
+
+        ListNode* first=head;//第一个节点
+        ListNode* second=head->next;//第二个节点
+
+        //递归，交换
+        first->next=swapPairs(second->next);//
+        second->next=first;
+
+        return second;
+    }
+};
+方法二：迭代
+我们把链表分为两部分，即奇数节点为一部分，偶数节点为一部分，A 指的是交换节点中的前面的节点，B 指的是要交换节点中的后面的节点。在完成它们的交换，我们还得用 prevNode 记录 A 的前驱节点。
+
+算法：
+
+firstNode（即 A） 和 secondNode（即 B） 分别遍历偶数节点和奇数节点，即两步看作一步。
+交换两个节点：
+ firstNode.next = secondNode.next
+ secondNode.next = firstNode
+还需要更新 prevNode.next 指向交换后的头。
+prevNode.next = secondNode
+迭代完成后得到最终的交换结果。
+class Solution {
+public:
+    ListNode* swapPairs(ListNode* head) {
+        ListNode* dummy=new ListNode(-1);
+        dummy->next=head;
+        ListNode* preNode=dummy;
+
+        while(head!=NULL&&head->next!=NULL)
+        {
+            ListNode* first=head;//第一个节点
+            ListNode* second=head->next;//第二个节点
+            //交换节点
+            preNode->next=second;
+            first->next=second->next;
+            second->next=first;
+            //重新赋值
+            preNode=first;//
+            head=first->next;
+        }
+        return dummy->next;
+    }
+};
