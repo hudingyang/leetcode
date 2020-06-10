@@ -45,7 +45,7 @@ public:
         stk.push(-1);
         for(int i=0;i<s.size();i++)
         {
-            if(s[i]=='(')
+            if(s[i]=='(')//将下标入栈
             {
                 stk.push(i);
             }
@@ -57,7 +57,7 @@ public:
                 }
                 else
                 {
-                    maxans=max(maxans,i-stk.top());
+                    maxans=max(maxans,i-stk.top());//当前下标减去栈顶元素
                 }
             }
         }
