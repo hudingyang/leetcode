@@ -1,0 +1,49 @@
+680题是判断一个字符串是否是回文串，但是可以对字符串进行至多一次删除操作，所以我们也可以使用首尾指针进行遍历
+如果首尾指针对应得字符相等就继续比较，如果不相等，有两种策略，一种是删除左指针指向的字符或者删除右指针指向的字符，然后判断首尾指针
+中间的子字符串是否回文。
+class Solution {
+public:
+    bool checkPalindrome(const string& s, int low, int high) {
+        for (int i = low, j = high; i < j; i ++, j --) {
+            if (s[i] != s[j]) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    bool validPalindrome(string s) {
+        int low = 0, high = s.size() - 1;
+        while (low < high) {
+            char c1 = s[low], c2 = s[high];
+            if (c1 == c2) {
+                low ++;
+                high --;
+            }
+            else {
+                return checkPalindrome(s, low, high - 1) || checkPalindrome(s, low + 1, high);
+            }
+        }
+        return true;
+    }
+};
+
+
+class Solution {
+public:
+    bool validPalindrome(string s) {
+        return valid(s, 0, s.size() - 1, 0);
+    }
+
+    bool valid(string& s, int l, int r, int del) {
+        if (l >= r) return true;
+
+        if (s[l] != s[r]) {
+            del++;
+            if (del > 1) return false;
+            return (valid(s, l + 1, r, del) || valid(s, l, r - 1, del));
+        }
+
+        return valid(s, l + 1, r - 1, del);
+    }
+};
