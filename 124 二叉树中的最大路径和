@@ -1,0 +1,39 @@
+二叉树路径
+如图所示，题目所说的二叉树中的路径可以分为以下四种：
+
+单一结点
+某个结点及其左子树组成路径
+某个结点及其右子树组成路径
+某个结点及其左右子树组成的路径
+要注意其中类型4的路径是无法作为子路径返回给上一级结点的，否则形成的就不是路径（只有惟一的起点和终点）而是树了
+
+解题步骤
+主要思路是采用递归后序遍历。遍历到某个结点时，先获得该结点左右子树中的最大路径，
+然后将左右子树中的最大路径与该结点连接形成以上四种类型的路径，更新全局的最大路径和，
+最后将1、2、3类型路径中最大的路径和返回给上一级结点。
+
+class solution
+{
+public:
+   int res=INT_MIN;
+   int maxpathsum(TreeNode* root)
+   {
+    dfs(root);
+    return res;
+   }
+   int dfs(TreeNode* root)
+   {
+    if(root==nullptr) return 0;
+    int left=dfs(root->left)+root->val;
+    int right=dfs(root->right)+root->val;
+    int lr=left+right-root->val;
+    res=maxfive(res,root->val,left,right,lr);
+    return max(root->val,max(left,right));//取最大者传递给上一层；
+   }
+   int maxfive(int a,int b,int c,int d,int e)
+   {
+    return max(a.max(b,max(c,max(d,e))));
+   }
+   
+   
+};
