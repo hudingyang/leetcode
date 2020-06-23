@@ -1,0 +1,96 @@
+解题思路：
+    二进制求和，满二进一：
+    1、首先让两个字符串等长，若不等长，在短的字符串前补零，否则之后的操作会超出索引。
+    2、然后从后到前遍历所有的位数，同位相加，这里有一个点，用的是字符相加，利用 ASCII 码，字符在内部都用数字表示，
+    我们不需要知道具体数值，但可知 ‘0’-‘0’ = 0， ‘0’+1=‘1’，以此类推 。字符的加减，大小比较，实际上都是内部数字的加减，大小比较
+    3、判断相加后的字符，若大于等于字符 ‘2’，下一位需要进一
+    4、第 0 位数的相加在这里是单独处理的，因为它可能涉及到字符的插入（即是否需要在最前面加一位数 ‘1’
+    
+    逐位相加
+    string addBinary(string a, string b) {
+	reverse(a.begin(), a.end());//反转字符串，从低位开始相加
+	reverse(b.begin(), b.end());
+	int i = 0, j = 0;
+	string result;//string可以直接push_back
+	int temp = 0;
+	while (i < a.size() && j < b.size())
+	{
+		result.push_back((a[i] + b[j] + temp - 2 * '0') % 2 + '0');
+		temp = (a[i] + b[j] + temp - 2 * '0') / 2;
+		i++;
+		j++;
+	}
+	if (i == a.size())//尾部处理1：如果b字符串还有高位
+	{
+		while (j < b.size())
+		{
+			result.push_back((b[j] + temp - '0') % 2 + '0');
+			temp = (b[j] + temp - '0') / 2;
+			j++;
+		}
+	}
+	else//尾部处理2：如果a字符串还有高位
+	{
+		while (i < a.size())
+		{
+			result.push_back((a[i] + temp - '0') % 2 + '0');
+			temp = (a[i] + temp - '0') / 2;
+			i++;
+		}
+	}
+	if (temp != 0)//处理最后的进位
+		result.push_back(temp + '0');
+	reverse(result.begin(), result.end());
+	return result;
+}
+    
+    逐位相加优化：
+    string adabinary(string a,string b)
+    {
+        reverse(a.begin(),a.end());
+        reverse(b.begin(),b.end());
+        
+        int i=0,j=0;
+        string res;
+        int temp=0;
+        while(i<a.size()||j<b.size())
+        {
+           int x=i<a.size()?a[i]-'0':0;
+           int y=i<b.size()?b[i]-'0':0;
+           
+           res.push_back((x+y+temp)%2+'0');
+           temp=(x+y+temp)/2;
+           i++;
+           j++;
+        }
+        if(temp!=0)
+        {
+            res.push_back(temp+'0');
+        }
+        reverse(res.begin(),res.end());
+        return res;
+    }
+    
+    
+    位运算
+    string addBinary(string a, string b)
+{
+	reverse(a.begin(), a.end());
+	reverse(b.begin(), b.end());
+	int i = 0, j = 0;
+	string result;
+	int carry = 0;
+	while (i < a.size() || j < b.size())
+	{
+		int a1 = i < a.size() ? a[i] - '0' : 0;//这样就不用在外面再加循环
+		int b1 = j < b.size() ? b[j] - '0' : 0;
+		result.push_back(a1^b1^carry+'0');//异或操作，得到该位相加的结果
+		carry = (a1 + b1 + carry) >> 1;//通过右移，获得该位向前的进位
+		i++;
+		j++;
+	}
+	if (carry != 0)
+		result.push_back(carry + '0');
+	reverse(result.begin(), result.end());
+	return result;
+}
