@@ -1,0 +1,54 @@
+解题思路
+定义dp[i][j] 为A 以i结尾，B以j结尾的最长公共子数组。那么可以分为两类：
+如果A[i] == B[j], 那么有dp[i][j] = 1 + d[i-1][j-1]
+A[i] 不等于 b[j], 则dp[i][j] = 0
+计算的过程中维护一个最大值即可。
+时间复杂度O(n * m)
+空间复杂度，由于只依赖于上一维的状态，所以可以使用滚动数组优化为O(min(n, m))
+class Solution {
+public:
+    int findLength(vector<int>& A, vector<int>& B) {
+       int m=a.size();
+       int n=b.size();
+       vector<vector<int>>dp(m+1,vector<int>(n+1,0);
+       int res=0;
+       for(int i=0;i<m;i++)
+       {
+          for(int j=0;j<n;j++)
+          {
+             if(a[i]==b[j])
+             dp[i+1][j+1]=dp[i][j]+1;
+             ans=max(ans,dp[i+1][j+1])
+          }
+       }
+       return res;
+    }
+};
+
+解题思路
+定义dp[i][j]标识分别以A[i]和B[j]结尾的最长相等子数组长度
+如果A[i] != B[j] 则dp[i][j] = 0;
+如果A[i] == B[j] 则dp[i][j] = dp[i-1][j-1] + 1;
+
+由于dp[i][j]只与上一行的dp[i-1][j-1]相关，因此，从后向前迭代j时，可以将二维数组简化到1维
+
+class Solution {
+public:
+    int findLength(vector<int>& A, vector<int>& B) {
+        vector<int> dp(B.size()+1, 0);
+        int result = 0;
+        // 从后往前遍历, 为啥从后往前遍历
+        // 假设从前往后遍历
+        // A = [1, 2, 3]; B = [1, 2, 3];
+        // 则dp[0][0] = dp[1][1] + 1;而此时dp[1][1]并没有算出来
+        // 从后往前遍历
+        // dp[2][2] = dp[3][3] + 1 = 0 + 1;正好
+        for (int i = 0; i < A.size(); ++i) {
+            for (int j = B.size()-1; j >= 0; --j) {
+                dp[j+1] = A[i] == B[j] ? dp[j] + 1 : 0;
+                result = max(result, dp[j+1]);
+            }
+        }
+        return result;
+    }
+};
