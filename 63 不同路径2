@@ -1,0 +1,35 @@
+/*class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m=obstacleGrid.size(), n=obstacleGrid[0].size();
+        vector<vector<long long>> dp(m+1, vector<long long>(n+1));
+        dp[0][1] = 1;//不懂
+        for(int i=1; i<=m; i++){
+            for(int j=1; j<=n; j++){
+                if(obstacleGrid[i-1][j-1]){
+                    dp[i][j] = 0;
+                }else{
+                    dp[i][j] = dp[i-1][j] + dp[i][j-1];
+                }
+            }
+        }
+        return dp[m][n];
+    }
+};*/
+class Solution {
+public:
+    int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        int m = obstacleGrid.size(),n=obstacleGrid[0].size();
+        vector<vector<long long>>f(m+1, vector<long long >(n+1));//定义数组大一格
+        f[1][1] = 1;
+        if(obstacleGrid[0][0] == 1) f[1][1] = 0;//如果起点不可达，则为0
+        for(int i = 1; i <= m; i++){
+            for(int j = 1; j <= n; j++){
+                if(i == 1 && j == 1) continue;//如果是起点，无需做处理
+                if(obstacleGrid[i-1][j-1] == 1) continue;//如果有障碍，无需做处理
+                f[i][j] = f[i-1][j] + f[i][j-1];//
+            }
+        }
+        return f[m][n];
+    }
+};
