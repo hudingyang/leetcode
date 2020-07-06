@@ -43,41 +43,29 @@ public:
 };
 //
 动态规划
-使用动态规划解决此问题的步骤：
-定义一个二维数组bool dp[len-1][len-1]来记录遍历字符串所得的状态，
-dp[l][r]为true表示从l到r的子串为回文串，false表示不是回文串
-初始化二维数组，单个字符为回文串，所以定义dp[i][i] = true
-找到状态转移方程，dp[l][r] = (s[r]==s[l] && (r-l==1 || dp[l+1][r-1])) ? true : false
 class Solution {
 public:
     string longestPalindrome(string s) {
-     int len=s.size();
-     if(len==0)
-     return s;
-     bool dp[len][len];
-     int start=0,end=0;
-     for(int i=0;i<len;i++)
-        dp[i][i]=true;
-     for(int i=1;i<len;i++)
-     {
-        for(int l=0;l<r;l++)
-        {
-            if(s[r]==s[l]&&(r-l==1||dp[l+1][r-1]))
-            {
-                dp[l][r]=true;
-                if(r-1>end-start)
-                {
-                    start=l;
-                    end=r;
+        int n = s.size();
+        vector<vector<int>> dp(n, vector<int>(n));
+        string ans;
+        for (int l = 0; l < n; ++l) {
+            for (int i = 0; i + l < n; ++i) {
+                int j = i + l;
+                if (l == 0) {
+                    dp[i][j] = 1;
                 }
-                continue;
+                else if (l == 1) {
+                    dp[i][j] = (s[i] == s[j]);
+                }
+                else {
+                    dp[i][j] = (s[i] == s[j] && dp[i + 1][j - 1]);
+                }
+                if (dp[i][j] && l + 1 > ans.size()) {
+                    ans = s.substr(i, l + 1);
+                }
             }
-            else
-            {
-                dp[l][r]=false;
-            }            
         }
-     }
-     return s.substr(start,end-start+1);
+        return ans;
     }
 };
