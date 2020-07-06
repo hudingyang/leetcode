@@ -1,0 +1,54 @@
+搜索问题主要使用回溯法：
+回溯思考的步骤：
+1、画递归树
+2、根据递归树编码
+
+思考如何根据这棵递归树编码：
+
+1、每一个结点表示剩余没有扫描到的字符串，产生分支是截取了剩余字符串的前缀；
+2、产生前缀字符串的时候，判断前缀字符串是否是回文。
+
+如果前缀字符串是回文，则可以产生分支和结点；
+如果前缀字符串不是回文，则不产生分支和结点，这一步是剪枝操作。
+3、在叶子结点是空字符串的时候结算，此时从根结点到叶子结点的路径，就是结果集里的一个结果，使用深度优先遍历，记录下所有可能的结果。
+
+采用一个路径变量 path 搜索，path 全局使用一个（注意结算的时候，需要生成一个拷贝），因此在递归执行方法结束以后需要回溯，即将递归之前添加进来的元素拿出去；
+path 的操作只在列表的末端，因此合适的数据结构是栈。
+class Solution {
+public: 
+    vector<vector<string>> partition(string s) {
+    	vector<vector<string>> res;  
+    	vector<string> tmp;
+    	partition(s,0,tmp,res);
+    	return res;
+    }
+    void partition(const string& s,int start,vector<string>& tmp,vector<vector<string>>& res)
+    {
+    	if (start>=s.size())
+    	{
+    		res.push_back(tmp);
+    	}
+    	string temp;
+      //回溯：一个for循环，添加元素，递归，删除元素。这里判断是否是回文串
+    	for (int i = start; i < s.size(); ++i)
+    	{
+    		temp.push_back(s[i]);
+    		if (IsPalindrome(temp)) 
+    		{
+    			tmp.push_back(temp);
+    			partition(s,i+1,tmp,res);
+    			tmp.pop_back();
+    		}
+    		
+    	}
+    }
+    bool IsPalindrome(const string& s)
+    {
+    	for (int i = 0; i < s.size()/2; ++i)
+    	{
+    		if(s[i]!=s[s.size()-i-1])
+    			return false;
+    	}
+    	return true;
+    }
+};
