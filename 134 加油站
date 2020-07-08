@@ -1,0 +1,38 @@
+解题思路
+暴力法直接遍历从每个加油站出发，查看能不能行得通，就不赘述了。
+个人感觉官方的反证法不是很好理解，下面给出我的思路。考虑从每个加油站出发，要到达下一个加油站至少需要车子已有油多少升。以示例为例：
+
+gas  = [1,2,3,4,5]
+cost = [3,4,5,1,2]
+记tmpCost[i]=cost[i]-gas[i]，那么我们就能得到
+
+tmpCost=[2,2,2,-3,-3]
+其中负数表示加油站能额外提供给车子的油量，显然当tmpCost的总和小于等于0时有解，否则无解（因为整个过程中车子自己不能变出油来）。
+在一遍扫描的过程中使用一个变量totalCost存储tmpCost[i]的和就可以了（并不需要建立该O(n)大小的数组，上面的数组只是为了便于说明）。
+
+下面要找到开始出发点，假设出发点为startIndex，当前位置为i，则一旦[startIndex,i]区间中所有的tmpCost之和大于0，说明汽车走不下去了。
+使用一个变量startToCurrentCost来保存这个值，当汽车走到当前位置走不下去时，重置startIndex为i+1、startToCurrentCost为0。
+
+当最终遍历完，并且totalCost<0时，startIndex就是始发加油站，否则无解返回-1。
+
+
+class Solution {
+  public:
+  int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+   int start=0;
+   int startsum=0;
+   int starttocursum=0;
+   int n=gas.size();
+   for(int i=0;i<n;i++)
+   {
+      startsum+=gas[i]-cost[i];
+      starttocursum+=gas[i]-cost[i];
+      if(starttocursum<0)
+      {
+          start=i+1;
+          starttocursum=0;
+      }
+   }
+   return starttocursum>0?start:-1;
+  }
+};
