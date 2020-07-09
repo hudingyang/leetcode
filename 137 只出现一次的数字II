@@ -1,0 +1,17 @@
+class Solution {
+public:
+    int singleNumber(vector<int>& nums) {
+        int res=0; //最终答案
+        for(int i=0;i<32;i++){  //int型 32位
+            int sum=0; //第i位的1的个数
+            for(int j=0;j<nums.size();j++){
+                sum+=nums[j]>>i&1;  //&1:只取最后一位
+            }
+            res^=(sum%3)<<i; //^异或:相当于加法，因为1^1=0,1^0=1,0^1=1,0^0=0
+            //因为上面为了位运算右移了，所以这里得答案的时候需要左移
+        }
+        return res;
+    }
+};
+二进制下，统计每一位上的1的个数，因为除要得到的元素之外，其余元素均出现三次，所以每位上不是3n，就是3n+1。
+找到3n+1的位相加就是答案了。
