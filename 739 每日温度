@@ -1,0 +1,49 @@
+思路：
+  可以维护一个存储下标的单调栈，从栈低到栈顶的下标对应的温度列表中的温度一次递减。如果一个下标在单调栈里，则表示尚未找到下一次温度更高的下标。
+  
+  
+#define _CRT_SECURE_NO_WARNINGS
+#include<iostream>
+#include<vector>
+#include<stack>
+using namespace std;
+class solution {
+public:
+	vector<int> dailytemp(vector<int> & T){
+	  int n = T.size();
+	  stack<int> stk;
+	  vector<int> ans(n,0);
+	  for (int i = 0; i < n; i++)
+	  {
+		  while (!stk.empty() && T[i] > T[stk.top()])
+		 {
+			  int p = stk.top();
+			  ans[p] = i - p;
+			  stk.pop();
+		 }
+		 stk.push(i);
+	  }
+	  return ans;
+	}
+};
+
+int main()
+{
+	solution s;
+	int n;
+	cin >> n;
+	vector<int> res;
+	vector<int> data;
+	for (int i = 0; i < n; i++)
+	{
+		int t;
+		cin >> t;
+		char c;
+		scanf("%c", &c);
+		data.push_back(t);
+	}
+	res = s.dailytemp(data);
+	for (int i = 0; i < n; i++)
+		cout << res[i] << " ";
+	return 0;
+}
