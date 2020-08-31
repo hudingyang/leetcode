@@ -1,0 +1,27 @@
+1、动态规划法
+  状态：dp[i][j]表示字符串s在[i,j]区间的子串是否是一个回文串。
+  状态转移方程：当s[i]==s[j]&&(j-i<2||dp[i+1][j-1]时,dp[i][j]=true,否则为false;
+  状态方程的含义：1、只有一个字符时，比如a自然是一个 回文串
+                2、当有两个字符串时，如果是相等的，比如aa，也是一个回文子串。
+                3、当有三个及以上字符串时，比如ababa这个字符记为串1，把两边的a去掉，即bab记为串2，可以看出只要
+                   串2是一个回文串，那么左右各多一个a的串1必定也是回文串。所以当s[i]==s[j]时，自然要看dp[i+1][j-1]是不是回文串。
+class Solution {
+public:
+    int countSubstrings(string s) {
+        // 动态规划法
+        int n=s.size();
+        vector<vector<int>>dp(n,vector<int>(n,0));
+        int ans = 0;
+
+        for (int j = 0; j < n; j++) {
+            for (int i = 0; i <= j; i++) {
+                if (s[i] == s[j] && (j - i < 2 || dp[i + 1][j - 1])) {
+                    dp[i][j] = true;
+                    ans++;
+                }
+            }
+        }
+        return ans;
+    }
+};
+时间复杂度与空间复杂度均为O(n^2);
